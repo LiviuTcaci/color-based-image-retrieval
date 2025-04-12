@@ -15,7 +15,7 @@ def main():
         return
 
     # Verificăm dacă există imagini în directorul de test
-    test_images = [f for f in os.listdir(test_images_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    test_images = [f for f in os.listdir(test_images_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.tif', '.tiff'))]
     if not test_images:
         print("Nu s-au găsit imagini în directorul de test.")
         print("Vă rugăm să adăugați câteva imagini în directorul:", test_images_dir)

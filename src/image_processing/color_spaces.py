@@ -37,9 +37,15 @@ def load_image(image_path):
         numpy.ndarray: Imaginea încărcată în format BGR
     """
     # Citim imaginea folosind OpenCV (returnează în format BGR)
-    image = cv2.imread(image_path)
+    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
     if image is None:
         raise ValueError(f"Nu s-a putut încărca imaginea de la calea: {image_path}")
+    
+    # Verificăm dacă imaginea este în format TIFF și are 4 canale (RGBA)
+    if image_path.lower().endswith(('.tif', '.tiff')) and image.shape[2] == 4:
+        # Convertim din RGBA în BGR eliminând canalul alpha
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+    
     return image
 
 def save_image(image, save_path):
