@@ -1,8 +1,11 @@
 import os
 import sys
+import cv2
+import numpy as np
 from image_processing.color_spaces import (
     load_image, save_image, rgb_to_hsv, hsv_to_rgb, verify_conversion
 )
+from image_processing.histogram import compute_2d_rgb_histogram, visualize_2d_histogram
 
 def main():
     """
@@ -32,30 +35,29 @@ def main():
         image = load_image(image_path)
         print(f"Imagine încărcată cu succes. Dimensiuni: {image.shape}")
 
-        # Convertim în HSV
-        hsv_image = rgb_to_hsv(image)
-        print("Conversie în HSV realizată cu succes")
-        
-        # Afișăm informații despre imaginea HSV
-        print(f"Valori HSV - H: {hsv_image[:,:,0].min()}-{hsv_image[:,:,0].max()}, "
-              f"S: {hsv_image[:,:,1].min()}-{hsv_image[:,:,1].max()}, "
-              f"V: {hsv_image[:,:,2].min()}-{hsv_image[:,:,2].max()}")
+        # Calculăm histogramele 2D RGB
+        print("\nCalculăm histogramele 2D RGB...")
+        hist_rg, hist_rb, hist_gb = compute_2d_rgb_histogram(image)
+        print(f"Histograme calculate cu succes. Dimensiuni: {hist_rg.shape}")
 
-        # Convertim înapoi în RGB
-        rgb_image = hsv_to_rgb(hsv_image)
-        print("Conversie înapoi în RGB realizată cu succes")
+        # Vizualizăm histogramele
+        print("Vizualizăm histogramele...")
+        vis_rg = visualize_2d_histogram(hist_rg, "RG Histogram")
+        vis_rb = visualize_2d_histogram(hist_rb, "RB Histogram")
+        vis_gb = visualize_2d_histogram(hist_gb, "GB Histogram")
 
-        # Verificăm dacă conversiile au păstrat informația
-        if verify_conversion(image, rgb_image):
-            print("Verificare conversii: SUCCES - Imaginile sunt identice")
-        else:
-            print("Verificare conversii: EROARE - Imaginile diferă")
-
-        # Salvăm imaginile procesate
+        # Salvăm histogramele vizualizate
         base_name = os.path.splitext(test_images[0])[0]
-        save_image(hsv_image, os.path.join(test_images_dir, f"{base_name}_hsv.jpg"))
-        save_image(rgb_image, os.path.join(test_images_dir, f"{base_name}_rgb.jpg"))
-        print("Imaginile procesate au fost salvate cu succes")
+        save_image(vis_rg, os.path.join(test_images_dir, f"{base_name}_hist_rg.jpg"))
+        save_image(vis_rb, os.path.join(test_images_dir, f"{base_name}_hist_rb.jpg"))
+        save_image(vis_gb, os.path.join(test_images_dir, f"{base_name}_hist_gb.jpg"))
+        print("Histogramele au fost salvate cu succes")
+
+        # Afișăm informații despre histograme
+        print("\nInformații despre histograme:")
+        print(f"RG Histogram - Valoare maximă: {np.max(hist_rg):.4f}")
+        print(f"RB Histogram - Valoare maximă: {np.max(hist_rb):.4f}")
+        print(f"GB Histogram - Valoare maximă: {np.max(hist_gb):.4f}")
 
     except Exception as e:
         print(f"Eroare în timpul procesării: {str(e)}")
