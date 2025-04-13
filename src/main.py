@@ -1,6 +1,8 @@
 import os
 import sys
-from image_processing.color_spaces import load_image, save_image, rgb_to_hsv, hsv_to_rgb
+from image_processing.color_spaces import (
+    load_image, save_image, rgb_to_hsv, hsv_to_rgb, verify_conversion
+)
 
 def main():
     """
@@ -15,7 +17,7 @@ def main():
         return
 
     # Verificăm dacă există imagini în directorul de test
-    test_images = [f for f in os.listdir(test_images_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.tif', '.tiff'))]
+    test_images = [f for f in os.listdir(test_images_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff'))]
     if not test_images:
         print("Nu s-au găsit imagini în directorul de test.")
         print("Vă rugăm să adăugați câteva imagini în directorul:", test_images_dir)
@@ -33,10 +35,21 @@ def main():
         # Convertim în HSV
         hsv_image = rgb_to_hsv(image)
         print("Conversie în HSV realizată cu succes")
+        
+        # Afișăm informații despre imaginea HSV
+        print(f"Valori HSV - H: {hsv_image[:,:,0].min()}-{hsv_image[:,:,0].max()}, "
+              f"S: {hsv_image[:,:,1].min()}-{hsv_image[:,:,1].max()}, "
+              f"V: {hsv_image[:,:,2].min()}-{hsv_image[:,:,2].max()}")
 
         # Convertim înapoi în RGB
         rgb_image = hsv_to_rgb(hsv_image)
         print("Conversie înapoi în RGB realizată cu succes")
+
+        # Verificăm dacă conversiile au păstrat informația
+        if verify_conversion(image, rgb_image):
+            print("Verificare conversii: SUCCES - Imaginile sunt identice")
+        else:
+            print("Verificare conversii: EROARE - Imaginile diferă")
 
         # Salvăm imaginile procesate
         base_name = os.path.splitext(test_images[0])[0]

@@ -81,3 +81,25 @@ def denormalize_image(image):
         numpy.ndarray: Imaginea denormalizată
     """
     return (image * 255).astype(np.uint8)
+
+def verify_conversion(original_image, converted_image, tolerance=1):
+    """
+    Verifică dacă conversia a păstrat informația imaginii corect.
+    
+    Args:
+        original_image (numpy.ndarray): Imaginea originală
+        converted_image (numpy.ndarray): Imaginea după conversie
+        tolerance (int): Toleranța pentru diferențe (în pixeli)
+        
+    Returns:
+        bool: True dacă conversia a păstrat informația corect, False altfel
+    """
+    # Verificăm dacă dimensiunile sunt identice
+    if original_image.shape != converted_image.shape:
+        return False
+    
+    # Calculăm diferența absolută între imagini
+    diff = cv2.absdiff(original_image, converted_image)
+    
+    # Verificăm dacă există diferențe mai mari decât toleranța
+    return np.all(diff <= tolerance)
