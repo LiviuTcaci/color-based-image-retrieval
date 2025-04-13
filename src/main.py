@@ -7,7 +7,8 @@ from image_processing.color_spaces import (
 )
 from image_processing.histogram import (
     compute_2d_rgb_histogram, compute_3d_rgb_histogram,
-    visualize_2d_histogram, visualize_3d_histogram
+    visualize_2d_histogram, visualize_3d_histogram,
+    compute_hsv_histogram, visualize_hsv_histogram
 )
 
 def main():
@@ -29,9 +30,30 @@ def main():
         print("Vă rugăm să adăugați câteva imagini în directorul:", test_images_dir)
         return
 
-    # Procesăm prima imagine găsită
-    image_path = os.path.join(test_images_dir, test_images[0])
-    print(f"Procesăm imaginea: {image_path}")
+    # Afișăm lista de imagini disponibile
+    print("\nImagini disponibile:")
+    for idx, img in enumerate(test_images):
+        print(f"{idx}: {img}")
+
+    # Alegem imaginea de procesat
+    image_idx = 0  # implicit prima imagine
+    if len(sys.argv) > 1:
+        try:
+            image_idx = int(sys.argv[1])
+            if image_idx < 0 or image_idx >= len(test_images):
+                print(f"Index invalid. Folosim implicit prima imagine (index 0)")
+                image_idx = 0
+        except ValueError:
+            # Dacă argumentul este un nume de fișier, căutăm imaginea cu numele respectiv
+            image_name = sys.argv[1]
+            if image_name in test_images:
+                image_idx = test_images.index(image_name)
+            else:
+                print(f"Nu s-a găsit imaginea {image_name}. Folosim implicit prima imagine (index 0)")
+
+    # Procesăm imaginea selectată
+    image_path = os.path.join(test_images_dir, test_images[image_idx])
+    print(f"\nProcesăm imaginea: {image_path}")
 
     try:
         # Încărcăm imaginea
@@ -50,7 +72,7 @@ def main():
         vis_gb = visualize_2d_histogram(hist_gb, "GB Histogram")
 
         # Salvăm histogramele 2D vizualizate
-        base_name = os.path.splitext(test_images[0])[0]
+        base_name = os.path.splitext(test_images[image_idx])[0]
         save_image(vis_rg, os.path.join(test_images_dir, f"{base_name}_hist_rg.jpg"))
         save_image(vis_rb, os.path.join(test_images_dir, f"{base_name}_hist_rb.jpg"))
         save_image(vis_gb, os.path.join(test_images_dir, f"{base_name}_hist_gb.jpg"))
@@ -78,6 +100,23 @@ def main():
         print(f"Valoare maximă: {np.max(hist_3d):.4f}")
         print(f"Valoare medie: {np.mean(hist_3d):.4f}")
         print(f"Număr de bin-uri non-zero: {np.count_nonzero(hist_3d)}")
+
+        # Calculăm histogramele HSV
+        print("\nCalculăm histogramele HSV...")
+        hist_h, hist_s, hist_v = compute_hsv_histogram(image)
+        print("Histograme HSV calculate cu succes")
+
+        # Vizualizăm și salvăm histogramele HSV
+        print("Vizualizăm histogramele HSV...")
+        vis_hsv = visualize_hsv_histogram(hist_h, hist_s, hist_v)
+        save_image(vis_hsv, os.path.join(test_images_dir, f"{base_name}_hist_hsv.jpg"))
+        print("Histogramele HSV au fost salvate cu succes")
+
+        # Afișăm informații despre histogramele HSV
+        print("\nInformații despre histogramele HSV:")
+        print(f"Hue Histogram - Valoare maximă: {np.max(hist_h):.4f}")
+        print(f"Saturation Histogram - Valoare maximă: {np.max(hist_s):.4f}")
+        print(f"Value Histogram - Valoare maximă: {np.max(hist_v):.4f}")
 
     except Exception as e:
         print(f"Eroare în timpul procesării: {str(e)}")
