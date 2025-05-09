@@ -12,6 +12,12 @@ from image_processing.histogram import (
 )
 from image_processing.comparison import compare_images
 from image_processing.search import ImageDatabase
+from visualization.plots import (
+    plot_2d_histogram,
+    visualize_2d_rgb_histograms,
+    create_2d_histogram_visualization,
+    visualize_3d_rgb_histogram_planes
+)
 
 def main():
     """
@@ -87,6 +93,32 @@ def main():
         query_image = load_image(query_image_path)
         print(f"Imagine încărcată cu succes. Dimensiuni: {query_image.shape}")
 
+        # Creăm directorul pentru rezultate dacă nu există
+        results_dir = os.path.join(test_images_dir, 'results')
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
+        base_name = os.path.splitext(test_images[query_idx])[0]
+
+        # Vizualizare histograme 2D RGB
+        if method == '2D_RGB':
+            print("\nCalculăm histogramele 2D RGB...")
+            hist_rg, hist_rb, hist_gb = compute_2d_rgb_histogram(query_image)
+            matplotlib_path = os.path.join(results_dir, f"{base_name}_2d_rgb_histograms.png")
+            visualize_2d_rgb_histograms(hist_rg, hist_rb, hist_gb, save_path=matplotlib_path)
+            print(f"Vizualizare matplotlib salvată în: {matplotlib_path}")
+            opencv_path = os.path.join(results_dir, f"{base_name}_2d_rgb_histograms_cv.png")
+            create_2d_histogram_visualization(hist_rg, hist_rb, hist_gb, save_path=opencv_path)
+            print(f"Vizualizare OpenCV salvată în: {opencv_path}")
+
+        # Vizualizare histograme 3D RGB
+        if method == '3D_RGB':
+            print("\nCalculăm histograma 3D RGB...")
+            hist_3d = compute_3d_rgb_histogram(query_image)
+            planes_dir = os.path.join(results_dir, f"{base_name}_3d_hist_planes")
+            print(f"Salvez planurile 2D din histograma 3D RGB în: {planes_dir}")
+            visualize_3d_rgb_histogram_planes(hist_3d, save_dir=planes_dir, prefix=f"{base_name}_hist_3d_plan", plane_axis='B')
+            print(f"Toate planurile au fost salvate în: {planes_dir}")
+
         # Căutăm imagini similare
         print("\nCăutăm imagini similare...")
         results = db.search_similar(query_image, method=method, top_k=top_k)
@@ -98,7 +130,7 @@ def main():
             print(f"{idx}. {image_name} (distanță: {distance:.4f})")
 
         # Salvăm rezultatele într-un fișier text
-        results_file = os.path.join(test_images_dir, f"search_results_{method}.txt")
+        results_file = os.path.join(results_dir, f"search_results_{method}.txt")
         with open(results_file, 'w') as f:
             f.write(f"Rezultate căutare pentru {test_images[query_idx]}\n")
             f.write(f"Metodă: {method}\n")
