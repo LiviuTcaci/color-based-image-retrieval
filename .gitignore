@@ -29,6 +29,8 @@ ehthumbs.db
 Thumbs.db 
 
 # Project specific directories
+/results/
+/src/download_test_images.py
 tests/test_images/
 Materials/
 
