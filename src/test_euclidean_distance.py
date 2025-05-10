@@ -1,4 +1,4 @@
-from image_processing import load_image, compute_1d_histogram, compute_2d_histogram, compute_3d_histogram_rgb, euclidean_distance, normalize_histogram
+from image_processing import load_image, compute_1d_histogram, compute_2d_histogram_for_comparison, compute_3d_histogram_rgb, euclidean_distance, normalize_histogram
 import os
 import numpy as np
 
@@ -50,19 +50,20 @@ def test_euclidean_distance_2d_rgb():
     query_file = image_files[0]
     query_path = os.path.join(test_dir, query_file)
     query_img = load_image(query_path)
-    # Folosim planul R-G pentru exemplu
-    query_hist = compute_2d_histogram(query_img, 0, 1, bins=32)
+    # Folosește toate planurile 2D RGB pentru comparație
+    from image_processing import rgb_2d_all_planes_histogram_for_comparison
+    query_hist = rgb_2d_all_planes_histogram_for_comparison(query_img, bins=32)
     query_hist = normalize_histogram(query_hist)
     results = []
     for image_file in image_files:
         image_path = os.path.join(test_dir, image_file)
         img = load_image(image_path)
-        hist = compute_2d_histogram(img, 0, 1, bins=32)
+        hist = rgb_2d_all_planes_histogram_for_comparison(img, bins=32)
         hist = normalize_histogram(hist)
         dist = euclidean_distance(query_hist, hist)
         results.append((image_file, dist))
     results.sort(key=lambda x: x[1])
-    print("\nDistanțe Euclidiene 2D RGB (plan R-G, normalizate):")
+    print("\nDistanțe Euclidiene 2D RGB (toate planurile, normalizate):")
     for fname, dist in results:
         print(f"{fname:25s}  distanță: {dist:.5f}")
 

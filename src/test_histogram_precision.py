@@ -1,4 +1,4 @@
-from image_processing import search_similar_images, compute_1d_histogram, compute_2d_histogram, compute_3d_histogram_rgb, euclidean_distance
+from image_processing import search_similar_images, compute_1d_histogram, compute_2d_histogram_for_comparison, compute_3d_histogram_rgb, euclidean_distance
 import os
 import numpy as np
 
@@ -10,8 +10,8 @@ def rgb_1d_histogram_concat(image):
     ])
 
 def rgb_2d_histogram_rg(image):
-    # Folosim planul R-G cu 32 de bins
-    return compute_2d_histogram(image, 0, 1, bins=32).flatten()
+    # Folosim planul R-G cu 32 de bins, variantă corectă pentru comparație
+    return compute_2d_histogram_for_comparison(image, 0, 1, bins=32).flatten()
 
 def rgb_3d_histogram(image):
     return compute_3d_histogram_rgb(image, bins=8).flatten()

@@ -1,4 +1,4 @@
-from image_processing import search_similar_images, compute_1d_histogram, euclidean_distance, compute_2d_histogram, compute_3d_histogram_rgb
+from image_processing import search_similar_images, compute_1d_histogram, euclidean_distance, compute_2d_histogram, compute_3d_histogram_rgb, compute_2d_histogram_for_comparison
 import os
 import numpy as np
 
@@ -10,13 +10,13 @@ def rgb_1d_histogram_concat(image):
     ])
 
 def rgb_2d_histogram_rg(image):
-    return compute_2d_histogram(image, 0, 1, bins=32).flatten()
+    return compute_2d_histogram_for_comparison(image, 0, 1, bins=32).flatten()
 
 def rgb_2d_histogram_rb(image):
-    return compute_2d_histogram(image, 0, 2, bins=32).flatten()
+    return compute_2d_histogram_for_comparison(image, 0, 2, bins=32).flatten()
 
 def rgb_2d_histogram_gb(image):
-    return compute_2d_histogram(image, 1, 2, bins=32).flatten()
+    return compute_2d_histogram_for_comparison(image, 1, 2, bins=32).flatten()
 
 def rgb_3d_histogram(image):
     return compute_3d_histogram_rgb(image, bins=8).flatten()

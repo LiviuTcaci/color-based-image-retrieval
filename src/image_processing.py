@@ -205,13 +205,6 @@ def analyze_rgb_distribution(image_path):
     # Încarcă imaginea
     rgb_image = load_image(image_path)
     
-    # Afișează imaginea originală
-    plt.figure(figsize=(6, 6))
-    plt.imshow(rgb_image)
-    plt.title('Imagine originală')
-    plt.axis('off')
-    plt.show()
-    
     # Afișează histogramele 2D
     display_2d_rgb_histograms(rgb_image, f"Histograme 2D RGB: {Path(image_path).name}")
 
@@ -463,3 +456,33 @@ def search_similar_images(query_image_path, image_paths, histogram_func, distanc
         results.append((img_path, dist))
     results.sort(key=lambda x: x[1])
     return results[:top_n]  
+
+def compute_2d_histogram_for_comparison(image, channel1, channel2, bins=32):
+    """
+    Calculează histograma 2D pentru două canale de culoare, corectă pentru comparație (folosește np.histogram2d).
+    Args:
+        image (numpy.ndarray): Imagine în format RGB
+        channel1 (int): Indexul primului canal (0=R, 1=G, 2=B)
+        channel2 (int): Indexul celui de-al doilea canal (0=R, 1=G, 2=B)
+        bins (int): Numărul de bins pentru histogramă
+    Returns:
+        numpy.ndarray: Histograma 2D (fără log/normalizare la max)
+    """
+    ch1 = image[:, :, channel1].flatten()
+    ch2 = image[:, :, channel2].flatten()
+    hist, _, _ = np.histogram2d(ch1, ch2, bins=[bins, bins], range=[[0, 256], [0, 256]])
+    return hist
+
+def rgb_2d_all_planes_histogram_for_comparison(image, bins=32):
+    """
+    Calculează și concatenează histogramele 2D pentru toate planurile RGB (R-G, R-B, G-B) pentru comparație.
+    Args:
+        image (numpy.ndarray): Imagine în format RGB
+        bins (int): Numărul de bins pentru histogramă
+    Returns:
+        numpy.ndarray: Vector concatenat cu toate cele 3 histograme 2D
+    """
+    h_rg = compute_2d_histogram_for_comparison(image, 0, 1, bins).flatten()
+    h_rb = compute_2d_histogram_for_comparison(image, 0, 2, bins).flatten()
+    h_gb = compute_2d_histogram_for_comparison(image, 1, 2, bins).flatten()
+    return np.concatenate([h_rg, h_rb, h_gb])  
