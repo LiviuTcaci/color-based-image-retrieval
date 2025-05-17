@@ -25,10 +25,10 @@ def test_search():
     test_dir = "tests/test_images"
     image_files = [os.path.join(test_dir, f) for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     if not image_files:
-        print("Nu există imagini de test!")
+        print("No test images found!")
         return
     query_image = os.path.join(test_dir, "coffee.png")
-    print(f"Imagine query: {os.path.basename(query_image)}\n")
+    print(f"Query image: {os.path.basename(query_image)}\n")
     for name, hist_func in [
         ("1D RGB", rgb_1d_histogram_concat),
         ("2D RGB R-G", rgb_2d_histogram_rg),
@@ -44,9 +44,9 @@ def test_search():
             top_n=3,
             normalize=True
         )
-        print(f"Top 3 imagini similare ({name}, normalizat):")
+        print(f"Top 3 similar images ({name}, normalized):")
         for path, dist in results:
-            print(f"{os.path.basename(path):25s}  distanță: {dist:.5f}")
+            print(f"{os.path.basename(path):25s}  distance: {dist:.5f}")
         print()
 
 if __name__ == "__main__":

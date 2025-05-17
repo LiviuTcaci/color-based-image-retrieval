@@ -1,12 +1,11 @@
-# src/test_enhanced_visualization.py
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from image_processing import load_image, convert_to_hsv
 
-def display_enhanced_comparison(rgb_image, hsv_image, title="Comparație RGB vs HSV"):
+def display_enhanced_comparison(rgb_image, hsv_image, title="RGB vs HSV Comparison"):
     """
-    Afișează o comparație detaliată între RGB și HSV, incluzând canalele individuale.
+    Displays a detailed comparison between RGB and HSV, including individual channels.
     """
     plt.figure(figsize=(15, 10))
     
@@ -18,12 +17,12 @@ def display_enhanced_comparison(rgb_image, hsv_image, title="Comparație RGB vs 
     
     plt.subplot(232)
     plt.imshow(rgb_image[:,:,0], cmap='Reds')
-    plt.title('Canal R')
+    plt.title('R Channel')
     plt.axis('off')
     
     plt.subplot(233)
     plt.imshow(rgb_image[:,:,1], cmap='Greens')
-    plt.title('Canal G')
+    plt.title('G Channel')
     plt.axis('off')
     
     # HSV Image and channels
@@ -48,16 +47,15 @@ def display_enhanced_comparison(rgb_image, hsv_image, title="Comparație RGB vs 
     plt.show()
 
 def main():
-    # Testează cu o imagine din setul de test
+    # Test with an image from the test set
     image_path = "tests/test_images/astronaut.png"
     
-    # Încarcă și convertește imaginea
     rgb_image = load_image(image_path)
     hsv_image = convert_to_hsv(rgb_image)
     
-    # Afișează comparația îmbunătățită
+    # Display enhanced comparison
     display_enhanced_comparison(rgb_image, hsv_image, 
-                              f"Conversie RGB -> HSV: {image_path.split('/')[-1]}")
+                              f"RGB -> HSV Conversion: {image_path.split('/')[-1]}")
 
 if __name__ == "__main__":
     main()

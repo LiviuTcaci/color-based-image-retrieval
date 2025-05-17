@@ -30,7 +30,6 @@ Thumbs.db
 
 # Project specific directories
 /docs/documentation
-/src/download_test_images.py
 tests/test_images/
 Materials/
 

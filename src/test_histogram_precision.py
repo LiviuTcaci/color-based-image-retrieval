@@ -10,7 +10,7 @@ def rgb_1d_histogram_concat(image):
     ])
 
 def rgb_2d_histogram_rg(image):
-    # Folosim planul R-G cu 32 de bins, variantă corectă pentru comparație
+    # Using R-G plane with 32 bins, correct version for comparison
     return compute_2d_histogram_for_comparison(image, 0, 1, bins=32).flatten()
 
 def rgb_3d_histogram(image):
@@ -20,10 +20,10 @@ def test_histogram_precision():
     test_dir = "tests/test_images"
     image_files = [os.path.join(test_dir, f) for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     if not image_files:
-        print("Nu există imagini de test!")
+        print("No test images found!")
         return
     query_image = os.path.join(test_dir, "coffee.png")
-    print(f"Imagine query: {os.path.basename(query_image)}\n")
+    print(f"Query image: {os.path.basename(query_image)}\n")
     # 1D
     results_1d = search_similar_images(
         query_image_path=query_image,
@@ -33,9 +33,9 @@ def test_histogram_precision():
         top_n=3,
         normalize=True
     )
-    print("Top 3 imagini similare (1D RGB, normalizat):")
+    print("Top 3 similar images (1D RGB, normalized):")
     for path, dist in results_1d:
-        print(f"{os.path.basename(path):25s}  distanță: {dist:.5f}")
+        print(f"{os.path.basename(path):25s}  distance: {dist:.5f}")
     # 2D
     results_2d = search_similar_images(
         query_image_path=query_image,
@@ -45,9 +45,9 @@ def test_histogram_precision():
         top_n=3,
         normalize=True
     )
-    print("\nTop 3 imagini similare (2D RGB R-G, normalizat):")
+    print("\nTop 3 similar images (2D RGB R-G, normalized):")
     for path, dist in results_2d:
-        print(f"{os.path.basename(path):25s}  distanță: {dist:.5f}")
+        print(f"{os.path.basename(path):25s}  distance: {dist:.5f}")
     # 3D
     results_3d = search_similar_images(
         query_image_path=query_image,
@@ -57,9 +57,9 @@ def test_histogram_precision():
         top_n=3,
         normalize=True
     )
-    print("\nTop 3 imagini similare (3D RGB, normalizat):")
+    print("\nTop 3 similar images (3D RGB, normalized):")
     for path, dist in results_3d:
-        print(f"{os.path.basename(path):25s}  distanță: {dist:.5f}")
+        print(f"{os.path.basename(path):25s}  distance: {dist:.5f}")
 
 if __name__ == "__main__":
     test_histogram_precision()

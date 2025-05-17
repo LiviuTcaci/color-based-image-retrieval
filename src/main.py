@@ -14,9 +14,7 @@ import os
 def show_image(img_path, panel):
     try:
         img = Image.open(img_path)
-        # Obține dimensiunea originală
         orig_w, orig_h = img.size
-        # Setează o lățime maximă și o înălțime maximă pentru afișare
         max_w, max_h = 400, 400
         ratio = min(max_w / orig_w, max_h / orig_h, 1.0)
         new_size = (int(orig_w * ratio), int(orig_h * ratio))
@@ -25,7 +23,7 @@ def show_image(img_path, panel):
         panel.config(image=img_tk, width=new_size[0], height=new_size[1])
         panel.image = img_tk
     except Exception as e:
-        messagebox.showerror("Eroare", f"Eroare la afișarea imaginii: {e}")
+        messagebox.showerror("Error", f"Error displaying image: {e}")
 
 def gui():
     root = tk.Tk()
@@ -36,7 +34,6 @@ def gui():
     
     selected_img = {'path': None, 'rgb': None}
     
-    # Frame pentru rezultate căutare imagini similare
     results_frame = tk.Frame(root)
     results_frame.pack(pady=10)
     result_labels = []
@@ -70,7 +67,7 @@ def gui():
     
     def show_1d_hist():
         if selected_img['rgb'] is not None:
-            display_1d_rgb_histograms(selected_img['rgb'], title="Histogramă 1D RGB")
+            display_1d_rgb_histograms(selected_img['rgb'], title="1D RGB Histogram")
     
     def show_2d_hist():
         if selected_img['rgb'] is not None and selected_img['path'] is not None:
@@ -90,52 +87,52 @@ def gui():
             ax.set_xlabel('R')
             ax.set_ylabel('G')
             ax.set_zlabel('B')
-            ax.set_title("Histogramă 3D RGB")
+            ax.set_title("3D RGB Histogram")
             plt.tight_layout()
             plt.show()
     
     def show_1d_hist_hsv():
         if selected_img['rgb'] is not None:
-            display_1d_hsv_histograms(selected_img['rgb'], title="Histogramă 1D HSV")
+            display_1d_hsv_histograms(selected_img['rgb'], title="1D HSV Histogram")
 
     def show_2d_hist_hsv():
         if selected_img['rgb'] is not None:
-            display_2d_hsv_histograms(selected_img['rgb'], title="Histograme 2D HSV")
+            display_2d_hsv_histograms(selected_img['rgb'], title="2D HSV Histograms")
 
     def show_3d_hist_hsv():
         if selected_img['rgb'] is not None:
-            display_3d_histogram_hsv(selected_img['rgb'], title="Histogramă 3D HSV")
+            display_3d_histogram_hsv(selected_img['rgb'], title="3D HSV Histogram")
     
     # --- BUTTON FRAMES ---
     btn_frame_top = tk.Frame(root)
     btn_frame_top.pack(pady=10)
-    tk.Button(btn_frame_top, text="Selectează imagine", command=select_image).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_top, text="Select Image", command=select_image).pack(side=tk.LEFT, padx=5)
 
-    btn_frame_rgb = tk.LabelFrame(root, text="Vizualizare RGB", padx=10, pady=5)
+    btn_frame_rgb = tk.LabelFrame(root, text="RGB Visualization", padx=10, pady=5)
     btn_frame_rgb.pack(pady=5, fill="x")
-    tk.Button(btn_frame_rgb, text="Histogramă 1D RGB", command=show_1d_hist).pack(side=tk.LEFT, padx=5)
-    tk.Button(btn_frame_rgb, text="Histogramă 2D RGB", command=show_2d_hist).pack(side=tk.LEFT, padx=5)
-    tk.Button(btn_frame_rgb, text="Histogramă 3D RGB", command=show_3d_hist).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_rgb, text="1D RGB Histogram", command=show_1d_hist).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_rgb, text="2D RGB Histogram", command=show_2d_hist).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_rgb, text="3D RGB Histogram", command=show_3d_hist).pack(side=tk.LEFT, padx=5)
 
-    btn_frame_hsv = tk.LabelFrame(root, text="Vizualizare HSV", padx=10, pady=5)
+    btn_frame_hsv = tk.LabelFrame(root, text="HSV Visualization", padx=10, pady=5)
     btn_frame_hsv.pack(pady=5, fill="x")
-    tk.Button(btn_frame_hsv, text="Histogramă 1D HSV", command=show_1d_hist_hsv).pack(side=tk.LEFT, padx=5)
-    tk.Button(btn_frame_hsv, text="Histogramă 2D HSV", command=show_2d_hist_hsv).pack(side=tk.LEFT, padx=5)
-    tk.Button(btn_frame_hsv, text="Histogramă 3D HSV", command=show_3d_hist_hsv).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_hsv, text="1D HSV Histogram", command=show_1d_hist_hsv).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_hsv, text="2D HSV Histogram", command=show_2d_hist_hsv).pack(side=tk.LEFT, padx=5)
+    tk.Button(btn_frame_hsv, text="3D HSV Histogram", command=show_3d_hist_hsv).pack(side=tk.LEFT, padx=5)
 
     # --- SEARCH SECTION ---
-    search_frame = tk.LabelFrame(root, text="Caută imagini similare", padx=10, pady=5)
+    search_frame = tk.LabelFrame(root, text="Search Similar Images", padx=10, pady=5)
     search_frame.pack(pady=10, fill="x")
     search_types = [
         "1D RGB", "2D RGB", "3D RGB",
         "1D HSV", "2D HSV", "3D HSV",
-        "Toate RGB", "Toate HSV", "Toate combinate"
+        "All RGB", "All HSV", "All Combined"
     ]
     search_var = tk.StringVar(value=search_types[0])
-    tk.Label(search_frame, text="Tip histogramă:").pack(side=tk.LEFT, padx=5)
+    tk.Label(search_frame, text="Histogram Type:").pack(side=tk.LEFT, padx=5)
     search_menu = tk.OptionMenu(search_frame, search_var, *search_types)
     search_menu.pack(side=tk.LEFT, padx=5)
-    tk.Button(search_frame, text="Caută imagini similare", command=lambda: search_similar_hist(search_var.get())).pack(side=tk.LEFT, padx=5)
+    tk.Button(search_frame, text="Search Similar Images", command=lambda: search_similar_hist(search_var.get())).pack(side=tk.LEFT, padx=5)
 
     def search_similar_hist(hist_type):
         clear_results()
@@ -186,9 +183,9 @@ def gui():
                 "1D HSV": hsv_1d,
                 "2D HSV": hsv_2d,
                 "3D HSV": hsv_3d,
-                "Toate RGB": all_rgb,
-                "Toate HSV": all_hsv,
-                "Toate combinate": all_combined
+                "All RGB": all_rgb,
+                "All HSV": all_hsv,
+                "All Combined": all_combined
             }
             hist_func = hist_func_map.get(hist_type, rgb_1d)
             results = search_similar_images(
@@ -208,12 +205,12 @@ def gui():
                     img_label.image = img_tk
                     img_label.grid(row=0, column=idx, padx=5)
                     result_imgs.append(img_label)
-                    text = f"{os.path.basename(path)}\ndistanță: {dist:.5f}"
+                    text = f"{os.path.basename(path)}\ndistance: {dist:.5f}"
                     lbl = tk.Label(results_frame, text=text)
                     lbl.grid(row=1, column=idx, padx=5)
                     result_labels.append(lbl)
                 except Exception as e:
-                    lbl = tk.Label(results_frame, text=f"Eroare la afișare: {e}")
+                    lbl = tk.Label(results_frame, text=f"Display error: {e}")
                     lbl.grid(row=1, column=idx, padx=5)
                     result_labels.append(lbl)
 

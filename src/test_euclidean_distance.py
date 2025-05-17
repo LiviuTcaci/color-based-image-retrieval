@@ -4,14 +4,14 @@ import numpy as np
 
 def test_euclidean_distance_1d_rgb():
     """
-    Calculează distanța Euclidiană între histograma 1D RGB a unei imagini query și celelalte imagini din setul de test, folosind histograme normalizate.
+    Calculates the Euclidean distance between the 1D RGB histogram of a query image and other images in the test set, using normalized histograms.
     """
     test_dir = "tests/test_images"
     image_files = [f for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     if not image_files:
-        print("Nu există imagini de test!")
+        print("No test images found!")
         return
-    # Folosește prima imagine ca query
+    # Use the first image as query
     query_file = image_files[0]
     query_path = os.path.join(test_dir, query_file)
     query_img = load_image(query_path)
@@ -21,8 +21,8 @@ def test_euclidean_distance_1d_rgb():
         compute_1d_histogram(query_img, 2)
     ])
     query_hist = normalize_histogram(query_hist)
-    print(f"Imagine query: {query_file}\n")
-    # Calculează distanța față de toate celelalte imagini
+    print(f"Query image: {query_file}\n")
+    # Calculate distance to all other images
     results = []
     for image_file in image_files:
         image_path = os.path.join(test_dir, image_file)
@@ -35,22 +35,25 @@ def test_euclidean_distance_1d_rgb():
         hist = normalize_histogram(hist)
         dist = euclidean_distance(query_hist, hist)
         results.append((image_file, dist))
-    # Sortează după distanță
+    # Sort by distance
     results.sort(key=lambda x: x[1])
-    print("Distanțe Euclidiene 1D RGB (normalizate):")
+    print("Euclidean Distances 1D RGB (normalized):")
     for fname, dist in results:
-        print(f"{fname:25s}  distanță: {dist:.5f}")
+        print(f"{fname:25s}  distance: {dist:.5f}")
 
 def test_euclidean_distance_2d_rgb():
+    """
+    Calculates the Euclidean distance between the 2D RGB histograms of a query image and other images in the test set, using normalized histograms.
+    """
     test_dir = "tests/test_images"
     image_files = [f for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     if not image_files:
-        print("Nu există imagini de test!")
+        print("No test images found!")
         return
     query_file = image_files[0]
     query_path = os.path.join(test_dir, query_file)
     query_img = load_image(query_path)
-    # Folosește toate planurile 2D RGB pentru comparație
+    # Use all 2D RGB planes for comparison
     from image_processing import rgb_2d_all_planes_histogram_for_comparison
     query_hist = rgb_2d_all_planes_histogram_for_comparison(query_img, bins=32)
     query_hist = normalize_histogram(query_hist)
@@ -63,15 +66,18 @@ def test_euclidean_distance_2d_rgb():
         dist = euclidean_distance(query_hist, hist)
         results.append((image_file, dist))
     results.sort(key=lambda x: x[1])
-    print("\nDistanțe Euclidiene 2D RGB (toate planurile, normalizate):")
+    print("\nEuclidean Distances 2D RGB (all planes, normalized):")
     for fname, dist in results:
-        print(f"{fname:25s}  distanță: {dist:.5f}")
+        print(f"{fname:25s}  distance: {dist:.5f}")
 
 def test_euclidean_distance_3d_rgb():
+    """
+    Calculates the Euclidean distance between the 3D RGB histograms of a query image and other images in the test set, using normalized histograms.
+    """
     test_dir = "tests/test_images"
     image_files = [f for f in os.listdir(test_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     if not image_files:
-        print("Nu există imagini de test!")
+        print("No test images found!")
         return
     query_file = image_files[0]
     query_path = os.path.join(test_dir, query_file)
@@ -87,9 +93,9 @@ def test_euclidean_distance_3d_rgb():
         dist = euclidean_distance(query_hist, hist)
         results.append((image_file, dist))
     results.sort(key=lambda x: x[1])
-    print("\nDistanțe Euclidiene 3D RGB (normalizate):")
+    print("\nEuclidean Distances 3D RGB (normalized):")
     for fname, dist in results:
-        print(f"{fname:25s}  distanță: {dist:.5f}")
+        print(f"{fname:25s}  distance: {dist:.5f}")
 
 if __name__ == "__main__":
     test_euclidean_distance_1d_rgb()
